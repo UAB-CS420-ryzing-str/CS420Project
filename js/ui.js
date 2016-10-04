@@ -37,20 +37,19 @@ function registerSubmitBtnNotify( recipient ) {
     submitBtnNotifyArray.push(recipient);
 }
 
-var browseBtn = document.getElementById('browse');
-browseBtn.addEventListener('click', browserBtnClickedNotify);
+// var browseBtn = document.getElementById('browse');
+// browseBtn.addEventListener('click', browserBtnClickedNotify);
+//
+// var submitBtn = document.getElementById('browse-submit');
+// submitBtn.addEventListener('click', submitBtnClickedNotify);
 
-var submitBtn = document.getElementById('browse-submit');
-submitBtn.addEventListener('click', submitBtnClickedNotify);
+// var fileLoader = document.getElementById('file-loader');
 
-var fileLoader = document.getElementById('file-loader');
-
-fileLoader.addEventListener('change', fileLoaderNotify);
+// fileLoader.addEventListener('change', fileLoaderNotify);
 
 function addData(line) {
     document.getElementById('data-panel').innerHTML += line;
 }
-
 
 function setDataPanel(data) {
     var dataCount = 0;
