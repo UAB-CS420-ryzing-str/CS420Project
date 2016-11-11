@@ -75,11 +75,20 @@ html, body {
     background: #c8fae0;
 }
 
-#file-loader {
-    display: none;
+/*#file-loader {*/
+    /*display: none;*/
+/*}*/
+
+.inputField {
+    font-size: 28px;
+    width: 100%;
+    margin: 0px 0px 5px 0px;
+    /*margin-bottom: 5px;*/
+    padding: 0px;
+    background-color: mintcream;
 }
 
-#file-path {
+.select {
     font-size: 28px;
     width: 100%;
     margin: 0px 0px 5px 0px;
@@ -90,7 +99,7 @@ html, body {
 
 .sidebar-btn {
     /*height: 90%;*/
-    width: 49%;
+    width: 100%;
     /*margin-top: 5%;*/
     cursor: pointer;
     line_height: 100px;
