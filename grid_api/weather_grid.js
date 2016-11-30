@@ -44,13 +44,15 @@ var weather_grid = (function(){
 
 	/**
 	 * Function to display the grid, the data in the grid, and the 
-	 * format(if defined). 
+	 * format(if defined). The latitude and longitude expected compbined
+	 * needs to be the top left corner and it will show the 20 degrees
+	 * to the right and 20 degrees to the bottom of that point.
 	 * This function needs to be called each time information is updated.
 	 *
 	 * @param canvasTag The string ID value for the canvas tag to have the info
 	 * 		    displayed in.
-	 * @param lat The starting latitude, expects bottom left corner.
-	 * @param lon The starting longitude, expects bottom left corner.
+	 * @param lat The starting latitude, expects top value.
+	 * @param lon The starting longitude, expects left value.
 	 */
 	weather_module.display = function(canvasTag, lat, lon){
 		var c = window.document.getElementById(canvasTag)
@@ -93,7 +95,7 @@ var weather_grid = (function(){
 				count++
 			}
 		}
-		lat = lat + 11.0;
+		lat = lat - 9.0;
 		lon = lon + 10.0;
 		imageObj.src = "https://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lon+"&zoom=5&size=800x800&maptype=satellite&key=AIzaSyBiJ3S2EtlwwzNw_p9IjofNx2Hwpc-EGzQ";
 	}
