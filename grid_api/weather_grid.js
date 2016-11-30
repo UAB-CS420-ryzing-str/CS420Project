@@ -11,6 +11,9 @@ var weather_grid = (function(){
 	 *
 	 * @param d The data to be displayed in the graph. Array of Dictionaries where
 	 * 	    the value to be displayed is tied to the key "data".
+	 * @param threshold The value to compare the data points and show how close
+	 * 	    the value is to the max by determing the value of color that needs
+	 * 	    to be displayed.
 	 */
 	weather_module.load_data = function(d, threshold){
 		data = d
@@ -46,15 +49,16 @@ var weather_grid = (function(){
 	 *
 	 * @param canvasTag The string ID value for the canvas tag to have the info
 	 * 		    displayed in.
-	 * @param boxSize The size ofthe boxes to be displayed. Default size is 40.
+	 * @param lat The starting latitude, expects bottom left corner.
+	 * @param lon The starting longitude, expects bottom left corner.
 	 */
-	weather_module.display = function(canvasTag, boxSize){
+	weather_module.display = function(canvasTag, lat, lon){
 		var c = window.document.getElementById(canvasTag)
 		var ctx = c.getContext("2d")
 		imageObj = new Image();
 		imageObj.onload = function(){      
 			ctx.drawImage(imageObj,90,110,460,460,0,0,c.width,c.height);
-			boxSize = boxSize || 80
+			var boxSize = 80
 			var width = c.width;
 			var height = c.height;
 			var size = width + height
@@ -89,7 +93,9 @@ var weather_grid = (function(){
 				count++
 			}
 		}
-		imageObj.src = "https://maps.googleapis.com/maps/api/staticmap?center=11.0,170&zoom=5&size=800x800&maptype=satellite&key=AIzaSyBiJ3S2EtlwwzNw_p9IjofNx2Hwpc-EGzQ";
+		lat = lat + 11.0;
+		lon = lon + 10.0;
+		imageObj.src = "https://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lon+"&zoom=5&size=800x800&maptype=satellite&key=AIzaSyBiJ3S2EtlwwzNw_p9IjofNx2Hwpc-EGzQ";
 	}
 
 
