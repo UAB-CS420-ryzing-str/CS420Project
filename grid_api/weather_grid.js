@@ -1,10 +1,10 @@
+
 var weather_grid = (function(){
 	var weather_module = {}
 
-	var data = undefined
+	var data      = undefined
 	var max_value = 0
-	var format = undefined
-	registerMapFormatSelectNotify(weather_module.load_data);
+	var format    = undefined
 
 	/**
 	 * Function to take the data given and store it. Also finds max value overall.
@@ -12,12 +12,16 @@ var weather_grid = (function(){
 	 * @param d The data to be displayed in the graph. Array of Dictionaries where
 	 * 	    the value to be displayed is tied to the key "data".
 	 */
-	weather_module.load_data = function(d){
+	weather_module.load_data = function(d, threshold){
 		data = d
-		for (var i= 0; i < data.length; i++) {
-			if (data[i] != undefined && data[i]["data"] > max_value) {
-				max_value = data[i]["data"]
+		if (threshold == undefined) {
+			for (var i= 0; i < data.length; i++) {
+				if (data[i] != undefined && data[i]["data"] > max_value) {
+					max_value = data[i]["data"]
+				}
 			}
+		} else {
+			max_value = threshold;
 		}
 	}
 
@@ -27,6 +31,7 @@ var weather_grid = (function(){
 	 *
 	 * Supported formats:
 	 * 	- heat_map
+	 * 	- cool_map
 	 *
 	 * @param fmt The format to be used. String value
 	 */
@@ -44,59 +49,68 @@ var weather_grid = (function(){
 	 * @param boxSize The size ofthe boxes to be displayed. Default size is 40.
 	 */
 	weather_module.display = function(canvasTag, boxSize){
-		boxSize = boxSize || 40
 		var c = window.document.getElementById(canvasTag)
-		var width = c.width;
-		var height = c.height;
 		var ctx = c.getContext("2d")
-		var size = width + height
-
-		var box_size = size/boxSize
-		ctx.font = (0.4*box_size) + "px Helvetica"
-		var text_pos_y = 0.35*box_size
-		var text_pos_x = 0.8*box_size
-		count = 0
-		for (var i = box_size, j = box_size; j <= size; i += box_size) {
-			
-			ctx.beginPath();
-			ctx.moveTo(i, j);
-			ctx.lineTo(i-box_size, j);
-			ctx.stroke()
-			ctx.moveTo(i, j)
-			ctx.lineTo(i,j-box_size)
-			ctx.stroke()
-			ctx.closePath()
-			if (count < data.length) {
-				var item = data[count]
-				if (item != undefined) {
-					fill_square(ctx, item["data"], i, j, box_size)
-					draw_value(ctx, item["data"], i-text_pos_x, j-text_pos_y)
+		imageObj = new Image();
+		imageObj.onload = function(){      
+			ctx.drawImage(imageObj,90,110,460,460,0,0,c.width,c.height);
+			boxSize = boxSize || 80
+			var width = c.width;
+			var height = c.height;
+			var size = width + height
+			var box_size = size/boxSize
+			ctx.font = (0.4*box_size) + "px Helvetica"
+			var text_pos_y = 0.35*box_size
+			var text_pos_x = 0.8*box_size
+			count = 0
+			for (var i = box_size, j = box_size; j <= size; i += box_size) {
+				console.log("for")	
+				ctx.fillStyle = "black";
+				ctx.strokeStyle = "black";
+				ctx.beginPath();
+				ctx.moveTo(i, j);
+				ctx.lineTo(i-box_size, j);
+				ctx.stroke()
+				ctx.moveTo(i, j)
+				ctx.lineTo(i,j-box_size)
+				ctx.stroke()
+				ctx.closePath()
+				if (count < data.length) {
+					var item = data[count]
+					if (item != undefined) {
+						fill_square(ctx, item["data"], i, j, box_size)
+						//draw_value(ctx, item["data"], i-text_pos_x, j-text_pos_y)
+					}
 				}
+				if (i >= width) {
+					j += box_size
+					i = 0
+				}
+				count++
 			}
-			if (i >= width) {
-				j += box_size
-				i = 0
-			}
-			count++
 		}
-	
+		imageObj.src = "https://maps.googleapis.com/maps/api/staticmap?center=11.0,170&zoom=5&size=800x800&maptype=satellite&key=AIzaSyBiJ3S2EtlwwzNw_p9IjofNx2Hwpc-EGzQ";
 	}
 
+
 	var fill_square = function(ctx, value, i, j, box_size) {
+		var num_val = Math.floor((value/max_value) * 255);
+		if (num_val > 255) {
+			num_val = 255;
+		}
 		if (format == "heat_map") {
-			var num_val = Math.floor((value/max_value) * 255); 
-			var color_str = "rgb(" + num_val + ",0,0)";
+			var color_str = "rgba(" + num_val + ",0,0,"+(num_val/400)+")";
 			ctx.fillStyle = color_str;
 			ctx.fillRect(i-box_size, j-box_size, box_size, box_size)
-			if (num_val < 100) {
-				ctx.fillStyle = "white"
-			} else {
-				ctx.fillStyle = "black"
-			}
+		} else if (format == "cool_map") {
+			var color_str = "rgba(0,0," + num_val + ","+(num_val/400)+")";
+			ctx.fillStyle = color_str;
+			ctx.fillRect(i-box_size, j-box_size, box_size, box_size)
 		}
 	}
 
 	var draw_value = function(ctx, text, i, j) {
+		ctx.fillStyle = "white";
 		ctx.fillText(text, i, j)
 	}
 
