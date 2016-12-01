@@ -15,6 +15,8 @@ document.getElementById('lat_long_submit').addEventListener('click', function (e
     console.log('lat and long');
     var lat = document.getElementById('lat').value.trim().toUpperCase();
     var long = document.getElementById('long').value.trim().toUpperCase();
+    var latLimit = -90;
+    var longLimit = 180;
     var er = ['Coordinates must be in a valid format and range with half degree increments:',
         'Latitude: 90N to 90S',
         'Longitude: 180E to 180W',
@@ -76,20 +78,27 @@ document.getElementById('lat_long_submit').addEventListener('click', function (e
     //     // console.log(latDir + ' ' + longDir);
     //     // console.log(lat + ' ' + long);
     //     // console.log(er);
+        var minLong = longNums;
+        var maxLat = latNums;
 
-        var minLong = longDir === 'E' ? longNums : - longNums;
-        var minLat = latDir === 'N' ? latNums : -latNums;
-        var maxLat = latNums + 20;
-        var maxLong = longNums + 20;
-        if(latDir === 'S') {
-            minLat = -minLat;
+        if(latDir === 'S')
             maxLat = -maxLat;
-        }
-        if(longDir === 'W') {
+
+        if(longDir === 'W')
             minLong = -minLong;
-            maxLong = -maxLong;
+
+        var minLat = latNums - 20;
+        var maxLong = longNums + 20;
+
+        if(minLat < latLimit){
+            maxLat += minLat - latLimit;
+            minLat = latLimit;
         }
-console.log(minLat);
+        if(maxLong > longLimit)
+            maxLong - (2 * longLimit);
+
+
+        console.log(minLat);
         if(er.length - erStartLen !== 0) error(er.join('\n'));
         else getData(minLat, minLong, maxLat, maxLong);
     } else {
