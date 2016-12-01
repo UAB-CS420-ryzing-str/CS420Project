@@ -96,7 +96,7 @@ var weather_grid = (function(){
 		}
 		lat = lat - 9.0;
 		lon = lon + 10.0;
-		imageObj.src = "https://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lon+"&zoom=5&size=800x800&maptype=satellite&key=AIzaSyBiJ3S2EtlwwzNw_p9IjofNx2Hwpc-EGzQ";
+		imageObj.src = "https://maps.googleapis.com/maps/api/staticmap?center="+lat+","+lon+"&zoom=5&size="+c.width+"x"+c.height+"&maptype=satellite&key=AIzaSyBiJ3S2EtlwwzNw_p9IjofNx2Hwpc-EGzQ";
 	}
 
 
