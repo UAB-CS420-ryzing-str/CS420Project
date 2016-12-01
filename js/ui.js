@@ -80,6 +80,7 @@ document.getElementById('lat_long_submit').addEventListener('click', function (e
     //     // console.log(er);
         var minLong = longNums;
         var maxLat = latNums;
+        var qArray = [];
 
         if(latDir === 'S')
             maxLat = -maxLat;
@@ -94,17 +95,39 @@ document.getElementById('lat_long_submit').addEventListener('click', function (e
             maxLat += minLat - latLimit;
             minLat = latLimit;
         }
-        if(maxLong > longLimit)
-            maxLong - (2 * longLimit);
-
-
-        console.log(minLat);
+// parse([]);
         if(er.length - erStartLen !== 0) error(er.join('\n'));
-        else getData(minLat, minLong, maxLat, maxLong);
+        else {
+            if (maxLong > longLimit) {
+                qArray = getData(minLat, minLong, maxLat, longLimit).concat(
+                    getData(minLat, longLimit, maxLat, maxLong - (2 * longLimit)));
+                parse(qArray);
+            } else
+                qArray = getData(minLat, minLong, maxLat, maxLong);
+
+            console.log(minLat);
+        }
     } else {
         error("The Latitude and Longitude fields are empty!");
     }
 });
+
+function data(i1, i2, i3, lat, long, date) {
+    this.lati = i1;
+    this.longi = i2;
+    this.i = i3;
+    this.lat = lat;
+    this.long = long;
+    this.date = date;
+}
+
+function parse(ar) {
+    var d = {};
+    d['1.2.3'] = new data(1,2,3,4,43,84);
+    for(var x in ar) {
+        d['1.2.3'] = new data(1,2,3,4,43,84);
+    }
+}
 
 document.getElementById('map_format_select').addEventListener('change', function (event) {
     weather_module.update_format(event.target.value);
@@ -135,13 +158,23 @@ function setDataPanel(data) {
 function getData(minLat, minLong, maxLat, maxLong) {
     console.log('getData reached');
     console.log(minLat + ', ' + minLong + ', ' +  maxLat + ', ' +  maxLong);
+    minLat = Math.round(minLat * 10);
+    minLong = Math.round(minLong * 10);
+    maxLat = Math.round(maxLat * 10);
+    maxLong = Math.round(maxLong * 10);
+    console.log(minLat + ', ' + minLong + ', ' +  maxLat + ', ' +  maxLong);
     // var url = 'https://cs420.andrewpe.com/data';
-    var url = 'http://45.55.77.74:8080/get/location/minLat/-200/maxLat/0/minLong/1600/maxLong/1800';
+    var url = 'http://45.55.77.74:8080/get/location/minLat/-20/maxLat/0/minLong/160/maxLong/180';
     // var url = 'http://45.55.77.74:8080/get/location/minLat/${minLat}/maxLat/${maxLat}/minLong/${minLong}/maxLong/${maxLong}';
     var method = 'GET';
     var response = 'default text';
     var xhr = new XMLHttpRequest();
     xhr.open(method, url, false);
+    xhr.timeout = 2000; // time in milliseconds
+    xhr.ontimeout = function (e) {
+        console.log('Timeout');
+        consloe.log(e);
+    };
     xhr.onreadystatechange = function() {
         if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
             response = JSON.parse(xhr.responseText);
