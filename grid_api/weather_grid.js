@@ -4,7 +4,10 @@ var weather_grid = (function(){
 	var data = undefined
 	var max_value = 0
 	var format = undefined
-	registerMapFormatSelectNotify(weather_module.load_data);
+
+	function boxSelect() {
+
+	}
 
 	/**
 	 * Function to take the data given and store it. Also finds max value overall.
