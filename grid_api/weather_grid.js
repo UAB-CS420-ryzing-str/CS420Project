@@ -94,8 +94,20 @@ var weather_grid = (function() {
         count++
       }
     }
+    // make sure lat wraps around correctly
     lat = lat - 9.0;
+    if (lat < -90.0) {
+        lat = 90.0 + (90.0 + lat);
+    } else if (lat > 90.0) {
+        lat = -(90.0 - (lat - 90.0));
+    }
+    // make sure long wraps around correctly
     lon = lon + 10.0;
+    if (lon > 180.0) {
+        lon = -(180.0 - (lon - 180.0));
+    } else if (lon < -180.0) {
+        lon = 180.0 + (180.0 + lon);
+    }
     imageObj.src = "https://maps.googleapis.com/maps/api/staticmap?center=" + lat + "," + lon + "&zoom=5&size=" + c.width + "x" + c.height + "&maptype=satellite&key=AIzaSyBiJ3S2EtlwwzNw_p9IjofNx2Hwpc-EGzQ";
   }
 
