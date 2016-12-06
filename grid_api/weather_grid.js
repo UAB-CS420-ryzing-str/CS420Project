@@ -55,6 +55,28 @@ var weather_grid = (function() {
    */
   weather_module.display = function(canvasTag, lat, lon) {
     var c = window.document.getElementById(canvasTag)
+
+    c.addEventListener("mousedown", function(event) {
+      console.log("in function")
+      var event = event || window.event
+      var x = new Number();
+      var y = new Number();
+
+      if (event.x != undefined && event.y != undefined) {
+        x = event.x;
+        y = event.y;
+      } else // Firefox method to get the position
+      {
+        x = event.pageX;
+        y = event.pageY;
+      }
+      var canvas = document.getElementById("weather_grid");
+      x -= canvas.offsetLeft;
+      y -= canvas.offsetTop;
+      alert("x: " + x + " y: " + y);
+
+    }, false);
+    console.log("Event")
     var ctx = c.getContext("2d")
     imageObj = new Image();
     imageObj.onload = function() {
@@ -69,7 +91,6 @@ var weather_grid = (function() {
       var text_pos_x = 0.8 * box_size
       count = 0
       for (var i = box_size, j = box_size; j <= size; i += box_size) {
-        console.log("for")
         ctx.fillStyle = "black";
         ctx.strokeStyle = "black";
         ctx.beginPath();
@@ -97,20 +118,19 @@ var weather_grid = (function() {
     // make sure lat wraps around correctly
     lat = lat - 9.0;
     if (lat < -90.0) {
-        lat = 90.0 + (90.0 + lat);
+      lat = 90.0 + (90.0 + lat);
     } else if (lat > 90.0) {
-        lat = -(90.0 - (lat - 90.0));
+      lat = -(90.0 - (lat - 90.0));
     }
     // make sure long wraps around correctly
     lon = lon + 10.0;
     if (lon > 180.0) {
-        lon = -(180.0 - (lon - 180.0));
+      lon = -(180.0 - (lon - 180.0));
     } else if (lon < -180.0) {
-        lon = 180.0 + (180.0 + lon);
+      lon = 180.0 + (180.0 + lon);
     }
     imageObj.src = "https://maps.googleapis.com/maps/api/staticmap?center=" + lat + "," + lon + "&zoom=5&size=" + c.width + "x" + c.height + "&maptype=satellite&key=AIzaSyBiJ3S2EtlwwzNw_p9IjofNx2Hwpc-EGzQ";
   }
-
 
   var fill_square = function(ctx, value, i, j, box_size) {
     var num_val = Math.floor((value / max_value) * 255);
