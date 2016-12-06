@@ -1,15 +1,13 @@
 /**
  * Created by cwcordell on 9/27/16.
 */
-const data;
+
+var data = [];
+
 /**
  * Click event listener for the latitude and longitude user input submission.
  * The function validates the input then either calls the notify function if
  * valid or calls the error function if not valid.
- *
- * @param canvasTag The string ID value for the canvas tag to have the info
- * 		    displayed in.
- * @param boxSize The size ofthe boxes to be displayed. Default size is 40.
  */
 document.getElementById('lat_long_submit').addEventListener('click', function (event) {
     console.log('lat and long');
@@ -26,8 +24,8 @@ document.getElementById('lat_long_submit').addEventListener('click', function (e
     var erStartLen = er.length;
 
     if(lat.value != "" && long.value != "") {
-        var longRegex = /^((?:1?[0-7]?\d(?:\.[05])?0*)|(?:180(?:\.0*)?))\s?[EW]$/i;
-        var latRegex = /^((?:[0-8]?\d(?:\.[05])?0*)|(?:90(?:\.0*)?))\s?[NS]$/i;
+        var longRegex = /^((?:1?[0-7]?\d(?:\.[05])?)|(?:180(?:\.0*)?))\s?[EW]$/i;
+        var latRegex = /^((?:[0-8]?\d(?:\.[05])?)|(?:90(?:\.0*)?))\s?[NS]$/i;
         if(!latRegex.test(lat) || !longRegex.test(long)) {
             er.push('The coordinates are in an improper format');
         }
@@ -54,22 +52,25 @@ document.getElementById('lat_long_submit').addEventListener('click', function (e
         if(longDir === 'W')
             minLong = -minLong;
 
-        var minLat = latNums - 20;
-        var maxLong = longNums + 20;
+        var minLat = maxLat - 20;
 
-        if(minLat < latLimit){
-            maxLat += minLat - latLimit;
+        var maxLong = minLong + 20;
+
+        if(minLat < latLimit) {
+            console.log('In if');
+            maxLat = latLimit + 20;
             minLat = latLimit;
         }
-// parse([]);
+        console.log("lats: " + minLat + ' ' + maxLat + ' ' + latLimit);
         if(er.length - erStartLen !== 0) error(er.join('\n'));
         else {
-            if (maxLong > longLimit) {
-                qArray = getData(minLat, minLong, maxLat, longLimit).concat(
-                    getData(minLat, longLimit, maxLat, maxLong - (2 * longLimit)));
-                parse(qArray);
-            } else
-                qArray = getData(minLat, minLong, maxLat, maxLong);
+            if (maxLong > longLimit)
+                qArray = getData([
+                    { minLat: minLat, minLong: minLong, maxLat: maxLat, maxLong: longLimit },
+                    { minLat: minLat, minLong: longLimit, maxLat: maxLat, maxLong: ( maxLong - (2 * longLimit) ) }
+                    ]);
+            else
+                qArray = getData([{minLat: minLat, minLong: minLong, maxLat: maxLat, maxLong: maxLong}]);
 
             console.log(minLat);
         }
@@ -78,146 +79,136 @@ document.getElementById('lat_long_submit').addEventListener('click', function (e
     }
 });
 
-// function data_obj(i1, i2, i3, lat, long, date) {
-//     this.lati = i1;
-//     this.longi = i2;
-//     this.i = i3;
-//     this.lat = lat;
-//     this.long = long;
-//     this.date = date;
-// }
-//
-// function lat5_obj(y) {
-//     this.lat5 = y;
-// }
-//
-// function long5_obj(x) {
-//     this.long5 = x;
-// }
-//
-// function parse(ar) {
-//     var d = {};
-//     d['1.2.3'] = new data_obj(1,2,3,4,43,84);
-//     for(var x in ar) {
-//         d['1.2.3'] = new data_obj(1,2,3,4,43,84);
-//     }
-// }
-
+/**
+ * Click event listener for the map format select box that calls the update_format
+ * function in the weather grid module.
+ */
 document.getElementById('map_format_select').addEventListener('change', function (event) {
-    weather_module.update_format(event.target.value);
+    console.log(event.target.value);
+    // weather_grid.update_format(event.target.value);
 });
 
+/**
+ * Click event listener for the map format select box that calls the display
+ * function in the weather grid module.
+ */
 document.getElementById('data_presets_select').addEventListener('change', function (event) {
-    weather_module.display(event.target.value);
+    console.log(event.target.value);
+    // weather_module.display(event.target.value);
 });
 
+/**
+ * Adds data to the data panel.
+ *
+ * @param line The string to be added to the data panel.
+ */
 function addData(line) {
     document.getElementById('data-panel').innerHTML += line;
 }
 
-function setDataPanel(data) {
-    if(data == null) {
-        var dataCount = 0;
-        var cssclass;
-        for (var i = 0, f; f = data[i]; i++) {
-            // output.push('<div class="data">',f,'</div>');
+/**
+ * Parses the data from the server and calls the addData function to add the
+ * data to the data panel.
+ */
+function setDataPanel() {
+    var dataCount = 0;
+    var cssclass;
+    console.log(data);
+    for (var j = 0, d; d = data[j]; j++) {
+        for (var i = 0, f; f = d.data[i]; i++) {
             cssclass = "data";
-            if (dataCount % 2 == 0) cssclass += " stripe"
-            var temp = '<div class="' + cssclass + '" >' + f + '</div>';
-            addData(temp);
+            if (dataCount % 2 == 0) cssclass += " stripe";
+            addData('<div class="' + cssclass + '" >' + f.data + '</div>');
             dataCount++;
         }
-    } else {
-        addData();
     }
-    // document.getElementById('data-panel').innerHTML = output.join('');
 }
 
-function getData(minLat, minLong, maxLat, maxLong) {
-    // console.log('getData reached');
-    // console.log(minLat + ', ' + minLong + ', ' +  maxLat + ', ' +  maxLong);
-    // minLat = Math.round(minLat * 10);
-    // minLong = Math.round(minLong * 10);
-    // maxLat = Math.round(maxLat * 10);
-    // maxLong = Math.round(maxLong * 10);
-    console.log('Coordinates: ' + minLat + ', ' + minLong + ', ' +  maxLat + ', ' +  maxLong);
-    // var url = 'https://cs420.andrewpe.com/data';
-    // var url = 'http://45.55.77.74:8080/get/location/minLat/-20/maxLat/0/minLong/160/maxLong/180';
-    // var url = "https://cs420.andrewpe.com/api/get/location/minLat/-20/maxLat/0/minLong/160/maxLong/180";
-    // var url = 'http://45.55.77.74:8080/get/location/minLat/${minLat}/maxLat/${maxLat}/minLong/${minLong}/maxLong/${maxLong}';
-    // var method = 'GET';
-    // var response = 'default text';
-    //
-    // var xhr = new XMLHttpRequest();
-    // xhr.open(method, url, false);
-    // xhr.timeout = 10000; // time in milliseconds
-    // xhr.ontimeout = function (e) {
-    //     console.log('Timeout');
-    //     consloe.log(e);
-    // };
-    // xhr.onreadystatechange = function() {
-    //     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-    //         response = JSON.parse(xhr.responseText);
-    //     } else if (xhr.readyState === XMLHttpRequest.DONE && xhr.status !== 200) {
-    //         error("There was an error getting the data!")
-    //     }
-    // }
-    // xhr.send();
+/**
+ * Refreshes the data panel with tile specific data.
+ *
+ * @param index The index number for the item in the data array.
+ */
+function setTile(index) {
+    if(index == null) {
+        setDataPanel();
+    } else {
+        var cssclass;
+        var dataCount = 0;
+        var tile = data[index];
+        for (var i = 0, f; f = tile[i]; i++) {
+            cssclass = "data";
+            if (dataCount % 2 == 0) cssclass += " stripe"
+            addData('<div class="' + cssclass + '" >' + f.data + '</div>');
+            dataCount++;
+        }
+    }
+}
 
-    // weather_module.load_data(null, response);
-    // console.log(response);
-
-    $.ajax({
-        // url: "http://45.55.77.74:8080/get/location/minLat/-20/maxLat/0/minLong/160/maxLong/180",
-        url: "https://cs420.andrewpe.com/api/get/location/minLat/-20/maxLat/0/minLong/160/maxLong/180",
-        // beforeSend: function( xhr ) {
-        //     xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
-        // }
-    })
-        .done(function( data ) {
-
-            if ( console && console.log ) {
-                console.log( "Sample of data:", data.slice( 0, 100 ) );
-                weather_module.load_data(null, response);
+/**
+ * Gets storm data from the server within the specified boundries.
+ *
+ * @param minLat The minimum latitude coordinate.
+ * @param minLong The minimum longitude coordinate.
+ * @param maxLat The maximum latitude coordinate.
+ * @param maxLong The maximum longitude coordinate.
+ */
+function getData(ar) {
+    console.log(ar);
+    for(var i = 0; i < ar.length; i++) {
+        console.log(ar[i]);
+        console.log('Coordinates: ' + ar[i].minLat + ', ' + ar[i].minLong + ', ' + ar[i].maxLat + ', ' + ar[i].maxLong);
+        $.ajax({
+            // url: "https://cs420.andrewpe.com/api/get/location/minLat/-20/maxLat/0/minLong/160/maxLong/180",
+            url: "https://cs420.andrewpe.com/api/get/location/minLat/${minLat}/maxLat/${maxLat}/minLong/${minLong}/maxLong/${maxLong}",
+        }).done(function(d) {
+            data.join(d);
+            if(i == ar.length) {
+                if (console && console.log) console.log("Sample of data:", d);
+                setDataPanel();
+                weather_grid.load_data(data);
             }
         });
+    }
 }
 
+/**
+ * Gets storm data from the server within the specified boundries.
+ *
+ * @param message The minimum latitude coordinate.
+ */
 function error(message) {
     alert(message);
 }
 
-// for testing purposes only below this line
+// Automated unit testing
 function runTests() {
     // test the data panel
     var dataArray = [];
     for (var i = 0; i < 50; i++) {
-        dataArray.push(i + '. This is a line of data');
+        var a = [];
+        for (var j = 0; j < 5; j++) {
+            a.push(i + ', ' + j + '. This is a line of data');
+        }
+        data.push(a);
     }
-
     setDataPanel(dataArray);
-
-    // test the lat_long submit button
-    registerLatLongSubmitBtnNotify(function () {
-        alert("register_lat_long_submitBtn clicked and valid");
-    });
-
-    // test the map format select
-    registerMapFormatSelectNotify(function () {
-        alert("Map format changed");
-    });
-
-    // test the lat_long submit button
-    registerDataPresetSelectNotify(function () {
-        alert("Data Preset changed");
-    });
-
-    // test the data change
-    registerDataChangedNotify(function () {
-        alert("Data Changed");
-    });
+    console.log('done');
 }
 
 // runTests();
-// getData();
-// console.log("done");
+
+// Manual Testing for UI
+// Longitude and Latitude input
+// upper left boundry - valid:          90N     0E      passes through
+// upper right boundry - valid:         90N     180E    passes through
+// lower left boundry - valid:          90S     0E      passes through
+// lower right boundry - valid:         90S     180E    passes through
+// lat North out of bounds - invalid:   90.5N   0E      caught
+// lat North out of bounds - invalid:   90.5S   0E      caught
+// lon East out of bounds - invalid:    90N     180.5E  caught
+// lon West out of bounds - invalid:    90N     180.5w  caught
+
+// Map Format Select Box
+
+// Map Format Select Box
