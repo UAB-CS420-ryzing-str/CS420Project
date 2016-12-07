@@ -11,6 +11,11 @@ html, body {
     margin: 0;
 }
 
+#wrapper {
+     height: 100%;
+     width: 100%;
+ }
+
 /*custom elements*/
 #graphics-content-wrapper {
     /*width: 100%;*/

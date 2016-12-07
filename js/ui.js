@@ -176,6 +176,7 @@ function setTile(index) {
     } else {
         clearDetailPanel()
         showDetailPanel();
+        document.getElementById('sidebar-wrapper').scrollTop = 0;
         currentIndex = index;
         addDetailData(`<div class="hand data" onclick="setTile(null)">Back</div>`);
         addDetailData(`<div class="data stripe" >Detail View</div>`);
