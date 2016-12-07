@@ -38,7 +38,7 @@ var weather_grid = (function() {
    *
    * @param fmt The format to be used. String value
    */
-  weather_module.update_format = function(fmt) {
+  weather_module.update_format = function(fmt) { console.log(fmt);
     format = fmt
   }
 

@@ -15,20 +15,20 @@
         <div class="sidebar-component">
             <input type="text" id="lat" class="inputField" placeholder="Latitude" />
             <input type="text" id="long" class="inputField" placeholder="Longitude" />
-            <!--<input type="file" id="file-loader"/>-->
         </div>
-        <!--<div class="sidebar-component">-->
-            <!--<input type="text" id="long" placeholder="Longitude" />-->
-        <!--</div>-->
         <div class="sidebar-component">
-            <!--<div class="sidebar-btn" id="browse">-->
-                <!--<a href="#">Browse</a>-->
-            <!--</div>-->
             <div class="sidebar-btn" style="margin: auto;" id="lat_long_submit">
                 <a href="#">Submit</a>
             </div>
         </div>
-                <button onClick="$('#csv-uploader').click()">Click</button>
+        <div class="sidebar-component">
+            <div class="sidebar-btn" onClick="$('#csv-uploader').click()" style="margin: auto;">
+                <a href="#">Upload</a>
+            </div>
+        </div>
+        <!--<button class="sidebar-btn" onClick="$('#csv-uploader').click()">Upload Data</button>-->
+
+
         <div class="sidebar-component">
             <div style="padding-top: 20px; padding-bottom: 0;">Map Format</div>
             <select id="map_format_select" class="select">

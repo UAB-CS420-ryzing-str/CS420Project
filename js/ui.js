@@ -94,6 +94,7 @@ document.getElementById('lat_long_submit').addEventListener('click', function (e
 document.getElementById('map_format_select').addEventListener('change', function (event) {
     // console.log(event.target.value);
     weather_grid.update_format(event.target.value);
+    weather_grid.display('weather_grid', latitude, longitude);
 });
 
 /**
@@ -281,6 +282,36 @@ function runTests() {
     }
     setDataPanel(dataArray);
 }
+
+//Change Listener
+$('#csv-uploader').on('change', importCSV);
+
+//Change Function
+function importCSV(event){
+    var files = event.target.files;
+    console.log('Importing CSV');
+
+    var uploadData = new FormData();
+
+    for(var i = 0; i < files.length; i++){
+        uploadData.append('file', files[i]);
+    }
+
+    $.ajax({
+        type: 'POST',
+        url: 'https://cs420.andrewpe.com/api/upload',
+        data: uploadData,
+        processData: false,
+        contentType: false,
+        success: function(data){
+            console.log(data);
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            console.error(errorThrown);
+        },
+    });
+}
+
 
 // runTests();
 
