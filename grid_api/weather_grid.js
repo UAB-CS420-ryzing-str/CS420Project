@@ -129,7 +129,7 @@ var weather_grid = (function() {
       }
     }
     // make sure lat wraps around correctly
-    lat = (lat+20) - 9.0;
+    lat = lat - 9.0;
     if (lat < -90.0) {
       lat = 90.0 + (90.0 + lat);
     } else if (lat > 90.0) {
