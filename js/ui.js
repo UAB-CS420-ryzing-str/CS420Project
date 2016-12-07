@@ -292,9 +292,17 @@ function importCSV(event){
     console.log('Importing CSV');
 
     var uploadData = new FormData();
+    var name = prompt("What would you like to name the dataset?");
+    var regex = /^[a-zA-Z-_]{3,16}$/i;
+
+    if(!latRegex.test(regex)) {
+        er.push('The dataset name is invalid.' +
+            'Allowed characters are upper and lower case letters, dashes, and underscores.');
+    }
 
     for(var i = 0; i < files.length; i++){
         uploadData.append('files', files[i]);
+        uploadData.append('dataset', name);
     }
 
     $.ajax({
@@ -311,7 +319,6 @@ function importCSV(event){
         },
     });
 }
-
 
 // runTests();
 
