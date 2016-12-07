@@ -240,10 +240,11 @@ function getData(ar) {
     data = [];
     waitMessage('Fetching Data ...');
     for(var i = 0; i < ar.length; i++) {
+        console.log("url = https://cs420.andrewpe.com/api/get/location/minLat/"+ar[i].minLat+"/maxLat/"+ar[i].maxLat+"/minLong/"+ar[i].minLong+"/maxLong/"+ar[i].maxLong+"/dataset/"+data_presets_select.selectedOptions[0].innerHTML);
         $.ajax({
             // url: "https://cs420.andrewpe.com/api/get/location/minLat/-20/maxLat/0/minLong/160/maxLong/180",
             // url: `https://cs420.andrewpe.com/api/get/location/minLat/${ar[i].minLat}/maxLat/${ar[i].maxLat}/minLong/${ar[i].minLong}/maxLong/${ar[i].maxLong}`,
-            url: `https://cs420.andrewpe.com/api/get/location/minLat/${ar[i].minLat}/maxLat/${ar[i].maxLat}/minLong/${ar[i].minLong}/maxLong/${ar[i].maxLong}/dataset/${datasetNamesAPI[currentDatasetIndex]}`,
+            url: `https://cs420.andrewpe.com/api/get/location/minLat/${ar[i].minLat}/maxLat/${ar[i].maxLat}/minLong/${ar[i].minLong}/maxLong/${ar[i].maxLong}/dataset/${data_presets_select.selectedOptions[0].innerHTML}`
         }).done(function(d) {
             dataManager(d);
         });
