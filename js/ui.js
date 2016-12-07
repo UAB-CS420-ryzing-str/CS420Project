@@ -5,6 +5,8 @@
 var data = [];
 var apiCallsNeeded;
 var currentIndex = null;
+var latitude;
+var longitude;
 
 document.getElementById('lat').value = '0n';
 document.getElementById('long').value = '160e';
@@ -63,6 +65,10 @@ document.getElementById('lat_long_submit').addEventListener('click', function (e
             maxLat = latLimit + 20;
             minLat = latLimit;
         }
+
+        latitude = maxLat;
+        longitude = minLong;
+
 
         if(er.length - erStartLen !== 0) error(er.join('\n'));
         else {
@@ -128,7 +134,6 @@ function setDataPanel() {
     // data = data.slice(200,400);
     resetData();
     showDataPanel();
-    console.log('in set data panel');
     document.getElementById("detail-panel").style.visibility = "hidden";
     document.getElementById("data-panel").style.visibility = "visible";
     waitMessage('Loading Data ...');
@@ -165,8 +170,7 @@ function setDataPanel() {
  * @param index The index number for the item in the data array.
  */
 function setTile(index) {
-    console.log(currentIndex);
-    if(index == null) {
+    if(index == null || currentIndex == index) {
         currentIndex = null;
         showDataPanel();
     } else {
@@ -249,6 +253,8 @@ function dataManager(d) {
     if(apiCallsNeeded == 0) {
         setDataPanel();
         weather_grid.load_data(data);
+        console.log('Coordinates: ' + latitude + ' ' + longitude);
+        weather_grid.display('weather_grid', latitude, longitude);
     }
 }
 
@@ -288,6 +294,6 @@ function runTests() {
 // lon East out of bounds - invalid:    90N     180.5E  caught
 // lon West out of bounds - invalid:    90N     180.5w  caught
 
-// Map Format Select Box
+// Map Format Select Box                                pass
 
-// Map Format Select Box
+// Data Preset Select Box                               pass
