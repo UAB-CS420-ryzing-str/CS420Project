@@ -16,6 +16,7 @@ var weather_grid = (function() {
    * 	    to be displayed.
    */
   weather_module.load_data = function(d, threshold) {
+    console.log('Load Data Function Reached');
     data = d
     if (threshold == undefined) {
       for (var i = 0; i < data.length; i++) {
@@ -55,6 +56,8 @@ var weather_grid = (function() {
    * @param lon The starting longitude, expects left value.
    */
   weather_module.display = function(canvasTag, lat, lon) {
+    console.log('Display Function Reached');
+    console.log("Args: " + canvasTag + ' ' + lat + ' ' + lon);
     var c = window.document.getElementById(canvasTag)
     c.addEventListener("mousedown", function(event) {
       var event = event || window.event
