@@ -16,7 +16,6 @@ var weather_grid = (function() {
    * 	    to be displayed.
    */
   weather_module.load_data = function(d, threshold) {
-    console.log('Load Data Function Reached');
     data = d
     if (threshold == undefined) {
       for (var i = 0; i < data.length; i++) {
@@ -148,9 +147,7 @@ var weather_grid = (function() {
 
   var fill_square = function(ctx, value, i, j, box_size) {
     value = parseInt(value) || 0;
-    console.log("value "+value+" max_val " + max_value)
     var num_val = Math.floor((value / max_value) * 255);
-    console.log("num_val "+num_val);
     if (num_val > 255) {
       num_val = 255;
     }
