@@ -4,6 +4,7 @@ var weather_grid = (function() {
   var data = undefined
   var max_value = 0
   var format = undefined
+  var regions = []
 
   /**
    * Function to take the data given and store it. Also finds max value overall.
@@ -55,28 +56,25 @@ var weather_grid = (function() {
    */
   weather_module.display = function(canvasTag, lat, lon) {
     var c = window.document.getElementById(canvasTag)
-
     c.addEventListener("mousedown", function(event) {
-      console.log("in function")
       var event = event || window.event
       var x = new Number();
       var y = new Number();
-
       if (event.x != undefined && event.y != undefined) {
         x = event.x;
         y = event.y;
-      } else // Firefox method to get the position
-      {
+      } else {
         x = event.pageX;
         y = event.pageY;
       }
       var canvas = document.getElementById("weather_grid");
       x -= canvas.offsetLeft;
       y -= canvas.offsetTop;
-      alert("x: " + x + " y: " + y);
 
+      x -= window.pageXOffset;
+      y += window.pageYOffset;
+      setTile(index_of_region({x:x, y:y}));
     }, false);
-    console.log("Event")
     var ctx = c.getContext("2d")
     imageObj = new Image();
     imageObj.onload = function() {
@@ -86,11 +84,13 @@ var weather_grid = (function() {
       var height = c.height;
       var size = width + height
       var box_size = size / boxSize
-      ctx.font = (0.4 * box_size) + "px Helvetica"
+      //ctx.font = (0.4 * box_size) + "px Helvetica"
       var text_pos_y = 0.35 * box_size
       var text_pos_x = 0.8 * box_size
+      regions = []
       count = 0
-      for (var i = box_size, j = box_size; j <= size; i += box_size) {
+      for (var i = box_size, j = box_size; j <= size/2; i += box_size) {
+        regions.push({x_pos:i, y_pos:j, size:box_size});
         ctx.fillStyle = "black";
         ctx.strokeStyle = "black";
         ctx.beginPath();
@@ -151,6 +151,19 @@ var weather_grid = (function() {
   var draw_value = function(ctx, text, i, j) {
     ctx.fillStyle = "white";
     ctx.fillText(text, i, j)
+  }
+
+  var check_region_collision = function(point, region) {
+      return (point.x <= region.x_pos && point.y <= region.y_pos && point.x >= (region.x_pos - region.size) && point.y >= (region.y_pos - region.size));
+  }
+
+  var index_of_region = function(point) {
+      var count = regions.length;
+      for (var i = 0; i < count; i++) {
+        if (check_region_collision(point, regions[i])) {
+            return i;
+        }
+      }
   }
 
   return weather_module
