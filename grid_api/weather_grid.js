@@ -3,7 +3,7 @@ var weather_grid = (function() {
 
   var data = undefined;
   var max_value = 0;
-  var format = "heat_map";
+  var format = "heat";
   var regions = [];
 
   /**
@@ -33,8 +33,8 @@ var weather_grid = (function() {
    * grid will just display white.
    *
    * Supported formats:
-   * 	- heat_map
-   * 	- cool_map
+   * 	- heat
+   * 	- cool
    *
    * @param fmt The format to be used. String value
    */
@@ -151,11 +151,11 @@ var weather_grid = (function() {
     if (num_val > 255) {
       num_val = 255;
     }
-    if (format == "heat_map") {
+    if (format == "heat") {
       var color_str = "rgba(" + num_val + ",0,0," + (num_val / 300) + ")";
       ctx.fillStyle = color_str;
       ctx.fillRect(i - box_size, j - box_size, box_size, box_size)
-    } else if (format == "cool_map") {
+    } else if (format == "cool") {
       var color_str = "rgba(0,0," + num_val + "," + (num_val / 300) + ")";
       ctx.fillStyle = color_str;
       ctx.fillRect(i - box_size, j - box_size, box_size, box_size)
