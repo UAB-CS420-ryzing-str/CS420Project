@@ -4,7 +4,11 @@
 
 var data = [];
 var apiCallsNeeded;
+var datasets;
+var datasetNamesAPI = 'https://cs420.andrewpe.com/api/datasets';
+var currentDatasetIndex = 0;
 var currentIndex = null;
+var data_presets_select = document.getElementById('data_presets_select');
 var latitude;
 var longitude;
 
@@ -101,9 +105,10 @@ document.getElementById('map_format_select').addEventListener('change', function
  * Click event listener for the map format select box that calls the display
  * function in the weather grid module.
  */
-document.getElementById('data_presets_select').addEventListener('change', function (event) {
-    // console.log(event.target.value);
-    weather_module.display(event.target.value);
+data_presets_select.addEventListener('change', function (event) {
+    console.log(event.target.value);
+    currentDatasetIndex = event.target.value;
+    // weather_module.display(datasetNamesAPI[currentDatasetIndex]);
 });
 
 /**
@@ -225,10 +230,11 @@ function clearDetailPanel() {
 /**
  * Gets storm data from the server within the specified boundries.
  *
- * @param minLat The minimum latitude coordinate.
- * @param minLong The minimum longitude coordinate.
- * @param maxLat The maximum latitude coordinate.
- * @param maxLong The maximum longitude coordinate.
+ * @param ar The array containing the coordinate values:
+ *      minLat The minimum latitude coordinate
+ *      minLong The minimum longitude coordinate
+ *      maxLat The maximum latitude coordinate
+ *      maxLong The maximum longitude coordinate
  */
 function getData(ar) {
     data = [];
@@ -236,11 +242,46 @@ function getData(ar) {
     for(var i = 0; i < ar.length; i++) {
         $.ajax({
             // url: "https://cs420.andrewpe.com/api/get/location/minLat/-20/maxLat/0/minLong/160/maxLong/180",
-            url: `https://cs420.andrewpe.com/api/get/location/minLat/${ar[i].minLat}/maxLat/${ar[i].maxLat}/minLong/${ar[i].minLong}/maxLong/${ar[i].maxLong}`,
+            // url: `https://cs420.andrewpe.com/api/get/location/minLat/${ar[i].minLat}/maxLat/${ar[i].maxLat}/minLong/${ar[i].minLong}/maxLong/${ar[i].maxLong}`,
+            url: `https://cs420.andrewpe.com/api/get/location/minLat/${ar[i].minLat}/maxLat/${ar[i].maxLat}/minLong/${ar[i].minLong}/maxLong/${ar[i].maxLong}/dataset/${datasetNamesAPI[currentDatasetIndex]}`,
         }).done(function(d) {
             dataManager(d);
         });
     }
+}
+
+/**
+ * Gets dataset names from the server.
+ */
+function getDatasetNames() {
+    $.ajax({
+        url: datasetNamesAPI,
+    }).done(function(d) {
+        datasets = d;
+        populateDatasetNames();
+        console.log(d);
+    });
+}
+
+function populateDatasetNames() {
+    // data_presets_select
+    if(datasets.length > 0) {
+        for(var i = 0; i < datasets.length; i++) {
+            var option = document.createElement("option");
+            option.appendChild(document.createTextNode(datasets[i]));
+            option.value = i;
+            data_presets_select.appendChild(option);
+        }
+    }
+}
+
+function datasetContains(name) {
+    if(datasets.length == 0) return false;
+    for(var i = 0; i < datasets.length; i++) {
+        if(name == datasets[i]) return true;
+        console.log(datasets[i] + ' ' + name);
+    }
+    return false;
 }
 
 /**
@@ -269,6 +310,49 @@ function error(message) {
     alert(message);
 }
 
+//Change Listener
+$('#csv-uploader').on('change', importCSV);
+
+//Change Function
+function importCSV(event){
+    var files = event.target.files;
+    console.log('Importing CSV');
+
+    var uploadData = new FormData();
+    var name = prompt("What would you like to name the dataset?");
+    var regex = /^[a-zA-Z_-]{3,16}$/i;
+
+    if(!regex.test(name)) {
+        error('The dataset name is invalid.' +
+            'Allowed characters are upper and lower case letters, dashes, and underscores.');
+    } else if (datasetContains(name)) {
+        error('The dataset name already exists.');
+    } else {
+        for (var i = 0; i < files.length; i++) {
+            uploadData.append('files', files[i]);
+            uploadData.append('dataset', name);
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: 'https://cs420.andrewpe.com/api/upload',
+            data: uploadData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.error(errorThrown);
+            },
+        });
+    }
+}
+
+getDatasetNames();
+
+
+
 // Automated unit testing
 function runTests() {
     // test the data panel
@@ -281,43 +365,6 @@ function runTests() {
         dataArray.push(a);
     }
     setDataPanel(dataArray);
-}
-
-//Change Listener
-$('#csv-uploader').on('change', importCSV);
-
-//Change Function
-function importCSV(event){
-    var files = event.target.files;
-    console.log('Importing CSV');
-
-    var uploadData = new FormData();
-    var name = prompt("What would you like to name the dataset?");
-    var regex = /^[a-zA-Z-_]{3,16}$/i;
-
-    if(!latRegex.test(regex)) {
-        er.push('The dataset name is invalid.' +
-            'Allowed characters are upper and lower case letters, dashes, and underscores.');
-    }
-
-    for(var i = 0; i < files.length; i++){
-        uploadData.append('files', files[i]);
-        uploadData.append('dataset', name);
-    }
-
-    $.ajax({
-        type: 'POST',
-        url: 'https://cs420.andrewpe.com/api/upload',
-        data: uploadData,
-        processData: false,
-        contentType: false,
-        success: function(data){
-            console.log(data);
-        },
-        error: function(jqXHR, textStatus, errorThrown){
-            console.error(errorThrown);
-        },
-    });
 }
 
 // runTests();
