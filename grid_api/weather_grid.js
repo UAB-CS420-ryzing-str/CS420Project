@@ -73,7 +73,10 @@ var weather_grid = (function() {
 
       x -= window.pageXOffset;
       y += window.pageYOffset;
-      setTile(index_of_region({x:x, y:y}));
+      setTile(index_of_region({
+        x: x,
+        y: y
+      }));
     }, false);
     var ctx = c.getContext("2d")
     imageObj = new Image();
@@ -89,8 +92,12 @@ var weather_grid = (function() {
       var text_pos_x = 0.8 * box_size
       regions = []
       count = 0
-      for (var i = box_size, j = box_size; j <= size/2; i += box_size) {
-        regions.push({x_pos:i, y_pos:j, size:box_size});
+      for (var i = box_size, j = box_size; j <= size / 2; i += box_size) {
+        regions.push({
+          x_pos: i,
+          y_pos: j,
+          size: box_size
+        });
         ctx.fillStyle = "black";
         ctx.strokeStyle = "black";
         ctx.beginPath();
@@ -154,16 +161,16 @@ var weather_grid = (function() {
   }
 
   var check_region_collision = function(point, region) {
-      return (point.x <= region.x_pos && point.y <= region.y_pos && point.x >= (region.x_pos - region.size) && point.y >= (region.y_pos - region.size));
+    return (point.x <= region.x_pos && point.y <= region.y_pos && point.x >= (region.x_pos - region.size) && point.y >= (region.y_pos - region.size));
   }
 
   var index_of_region = function(point) {
-      var count = regions.length;
-      for (var i = 0; i < count; i++) {
-        if (check_region_collision(point, regions[i])) {
-            return i;
-        }
+    var count = regions.length;
+    for (var i = 0; i < count; i++) {
+      if (check_region_collision(point, regions[i])) {
+        return i;
       }
+    }
   }
 
   return weather_module
