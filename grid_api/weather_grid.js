@@ -1,10 +1,10 @@
 var weather_grid = (function() {
   var weather_module = {}
 
-  var data = undefined
-  var max_value = 0
-  var format = undefined
-  var regions = []
+  var data = undefined;
+  var max_value = 0;
+  var format = "heat_map";
+  var regions = [];
 
   /**
    * Function to take the data given and store it. Also finds max value overall.
@@ -20,8 +20,8 @@ var weather_grid = (function() {
     data = d
     if (threshold == undefined) {
       for (var i = 0; i < data.length; i++) {
-        if (data[i] != undefined && data[i]["data"] > max_value) {
-          max_value = data[i]["data"]
+        if (data[i] != undefined && data[i]["count"] > max_value) {
+          max_value = data[i]["count"]
         }
       }
     } else {
@@ -56,8 +56,8 @@ var weather_grid = (function() {
    * @param lon The starting longitude, expects left value.
    */
   weather_module.display = function(canvasTag, lat, lon) {
-    console.log('Display Function Reached');
-    console.log("Args: " + canvasTag + ' ' + lat + ' ' + lon);
+    lat = parseInt(lat);
+    lon = parseInt(lon);
     var c = window.document.getElementById(canvasTag)
     c.addEventListener("mousedown", function(event) {
       var event = event || window.event
@@ -74,7 +74,7 @@ var weather_grid = (function() {
       x -= canvas.offsetLeft;
       y -= canvas.offsetTop;
 
-      x -= window.pageXOffset;
+      x += window.pageXOffset;
       y += window.pageYOffset;
       setTile(index_of_region({
         x: x,
@@ -114,7 +114,7 @@ var weather_grid = (function() {
         if (count < data.length) {
           var item = data[count]
           if (item != undefined) {
-            fill_square(ctx, item["data"], i, j, box_size)
+            fill_square(ctx, item["count"], i, j, box_size)
           //draw_value(ctx, item["data"], i-text_pos_x, j-text_pos_y)
           }
         }
@@ -143,16 +143,19 @@ var weather_grid = (function() {
   }
 
   var fill_square = function(ctx, value, i, j, box_size) {
+    value = parseInt(value) || 0;
+    console.log("value "+value+" max_val " + max_value)
     var num_val = Math.floor((value / max_value) * 255);
+    console.log("num_val "+num_val);
     if (num_val > 255) {
       num_val = 255;
     }
     if (format == "heat_map") {
-      var color_str = "rgba(" + num_val + ",0,0," + (num_val / 400) + ")";
+      var color_str = "rgba(" + num_val + ",0,0," + (num_val / 300) + ")";
       ctx.fillStyle = color_str;
       ctx.fillRect(i - box_size, j - box_size, box_size, box_size)
     } else if (format == "cool_map") {
-      var color_str = "rgba(0,0," + num_val + "," + (num_val / 400) + ")";
+      var color_str = "rgba(0,0," + num_val + "," + (num_val / 300) + ")";
       ctx.fillStyle = color_str;
       ctx.fillRect(i - box_size, j - box_size, box_size, box_size)
     }
