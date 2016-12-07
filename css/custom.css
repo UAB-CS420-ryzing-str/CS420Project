@@ -47,20 +47,27 @@ html, body {
     position: relative;
 }
 
-#data-panel {
+.data-panel {
     min-height: 100px;
     max-height: 20%;
-    /*height: 700px;*/
     width: 100%;
     background-color: mintcream;
-    /*padding: 2%;*/
     overflow: scroll;
     font-size: 20px;
     color: black;
-    /*bottom: 0px;*/
-    /*right: inherit;*/
-    /*display: block;*/
-    /*position:relative;*/
+}
+
+.detail-panel {
+    min-height: 100px;
+    max-height: 20%;
+    width: 100%;
+    position: absolute;
+    top: 55px;
+    left: 0;
+    background-color: mintcream;
+    /*overflow: scroll;*/
+    font-size: 20px;
+    color: black;
 }
 
 .data {
@@ -73,6 +80,24 @@ html, body {
 
 .stripe {
     background: #c8fae0;
+}
+
+.hand {
+    cursor: pointer;
+}
+
+.panelLink a {
+    display: block;
+    color: mintcream;
+    background: darkorange;
+    height: 100%;
+    text-decoration: none;
+}
+
+.panelLink a:hover {
+    color: #222;
+    background: mintcream;
+    text-decoration: none;
 }
 
 /*#file-loader {*/
