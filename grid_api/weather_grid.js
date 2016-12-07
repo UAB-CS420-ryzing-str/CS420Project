@@ -58,7 +58,11 @@ var weather_grid = (function() {
   weather_module.display = function(canvasTag, lat, lon) {
     lat = parseInt(lat);
     lon = parseInt(lon);
-    var c = window.document.getElementById(canvasTag)
+    var c = window.document.getElementById(canvasTag);
+    var w_width = window.innerWidth - 300;
+    var w_height = window.innerHeight;
+    c.width = w_width;
+    c.height = w_height;
     c.addEventListener("mousedown", function(event) {
       var event = event || window.event
       var x = new Number();
@@ -126,7 +130,7 @@ var weather_grid = (function() {
       }
     }
     // make sure lat wraps around correctly
-    lat = lat - 9.0;
+    lat = (lat+20) - 9.0;
     if (lat < -90.0) {
       lat = 90.0 + (90.0 + lat);
     } else if (lat > 90.0) {
