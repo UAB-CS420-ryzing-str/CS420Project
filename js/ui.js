@@ -294,7 +294,7 @@ function importCSV(event){
     var uploadData = new FormData();
 
     for(var i = 0; i < files.length; i++){
-        uploadData.append('file', files[i]);
+        uploadData.append('files', files[i]);
     }
 
     $.ajax({
