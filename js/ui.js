@@ -199,30 +199,48 @@ function setTile(index) {
     }
 }
 
+/**
+ * Shows the data panel and hides the detail panel.
+ */
 function showDataPanel() {
     document.getElementById("detail-panel").style.visibility = "hidden";
     document.getElementById("data-panel").style.visibility = "visible";
 }
 
+/**
+ * Shows the detail panel and hides the data panel.
+ */
 function showDetailPanel() {
     document.getElementById("data-panel").style.visibility = "hidden";
     document.getElementById("detail-panel").style.visibility = "visible";
 }
 
+/**
+ * Displays a message while data is retrieved or loaded.
+ */
 function waitMessage(msg) {
     clearDataPanel();
     addData(`<div class="data" id="wait">${msg}</div>`);
 }
 
+/**
+ * Resets the currentIndex to null and clears the data panel.
+ */
 function resetData() {
     currentIndex = null;
     clearDataPanel();
 }
 
+/**
+ * Clears the data panel.
+ */
 function clearDataPanel() {
     document.getElementById('data-panel').innerHTML = '';
 }
 
+/**
+ * Clears the detail panel.
+ */
 function clearDetailPanel() {
     document.getElementById('detail-panel').innerHTML = '';
 }
@@ -264,6 +282,9 @@ function getDatasetNames() {
     });
 }
 
+/**
+ * Populates the data preset select with the dataset names.
+ */
 function populateDatasetNames() {
     // data_presets_select
     if(datasets.length > 0) {
@@ -276,11 +297,28 @@ function populateDatasetNames() {
     }
 }
 
+/**
+ * Adds a new dataset name to the data preset select.
+ */
+function addDatasetName(name) {
+    console.log(name);
+    datasets.push(name);
+    console.log(datasets);
+    var option = document.createElement("option");
+    option.appendChild(document.createTextNode(name));
+    option.value = datasets.length;
+    data_presets_select.appendChild(option);
+}
+
+/**
+ * Checks that the dataset name does not exist in the dataset array.
+ *
+ * @return boolean.
+ */
 function datasetContains(name) {
     if(datasets.length == 0) return false;
     for(var i = 0; i < datasets.length; i++) {
         if(name == datasets[i]) return true;
-        console.log(datasets[i] + ' ' + name);
     }
     return false;
 }
@@ -311,9 +349,15 @@ function error(message) {
     alert(message);
 }
 
+/**
+ * JQuery listener for csv loader.
+ */
 //Change Listener
 $('#csv-uploader').on('change', importCSV);
 
+/**
+ * Gets the dataset names.
+ */
 //Change Function
 function importCSV(event){
     var files = event.target.files;
@@ -341,7 +385,9 @@ function importCSV(event){
             processData: false,
             contentType: false,
             success: function (data) {
-                console.log(data);
+                console.log('Ajax call was successful!');
+                // console.log(data);
+                addDatasetName(name);
             },
             error: function (jqXHR, textStatus, errorThrown) {
                 console.error(errorThrown);
@@ -350,8 +396,8 @@ function importCSV(event){
     }
 }
 
+// make the call to get the datasets
 getDatasetNames();
-
 
 
 // Automated unit testing
