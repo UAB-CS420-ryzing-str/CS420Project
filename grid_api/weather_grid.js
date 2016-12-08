@@ -93,7 +93,6 @@ var weather_grid = (function() {
       var height = c.height;
       var size = width + height
       var box_size = size / boxSize
-      //ctx.font = (0.4 * box_size) + "px Helvetica"
       var text_pos_y = 0.35 * box_size
       var text_pos_x = 0.8 * box_size
       regions = []
@@ -118,7 +117,6 @@ var weather_grid = (function() {
           var item = data[count]
           if (item != undefined) {
             fill_square(ctx, item["count"], i, j, box_size)
-          //draw_value(ctx, item["data"], i-text_pos_x, j-text_pos_y)
           }
         }
         if (i >= width) {
@@ -160,11 +158,6 @@ var weather_grid = (function() {
       ctx.fillStyle = color_str;
       ctx.fillRect(i - box_size, j - box_size, box_size, box_size)
     }
-  }
-
-  var draw_value = function(ctx, text, i, j) {
-    ctx.fillStyle = "white";
-    ctx.fillText(text, i, j)
   }
 
   var check_region_collision = function(point, region) {
