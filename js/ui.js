@@ -12,8 +12,6 @@ var data_presets_select = document.getElementById('data_presets_select');
 var latitude;
 var longitude;
 
-document.getElementById('lat').value = '0n';
-document.getElementById('long').value = '160e';
 /**
  * Click event listener for the latitude and longitude user input submission.
  * The function validates the input then either calls the notify function if
